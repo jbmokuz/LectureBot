@@ -1,0 +1,2 @@
+# LectureBot
+Discord Lecture Bot
