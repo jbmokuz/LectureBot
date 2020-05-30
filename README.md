@@ -1,2 +1,2 @@
 # LectureBot
-Discord Lecture Bot
+For discord lectures
