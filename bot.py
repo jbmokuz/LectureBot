@@ -21,7 +21,7 @@ VOICE_CHAN = None
 LECTURER = None
 # An id list of people to not mute or unmute
 # @TODO this should not be hardcoded
-EXCLUDE_LIST = []
+EXCLUDE_LIST = [279677842504286210]
 
 # This finds the voice channel tht the lecture is taking place in
 # It also gets the person who calls the bot function (I call a player as I mostly dev bots for games)
@@ -79,15 +79,6 @@ async def end_lecture(ctx):
         return
     await muteAll(False)
 
-@bot.command()
-# @TODO, should this add some one to a list or something?
-async def hand(ctx):
-    """
-    Raise your hand?
-    """
-    global VOICE_CHAN
-    player, chan = setup(ctx)
-    await chan.send(f"{str(player)} raised hand!")
 
 @bot.command()
 # This allows a Lecturer to unmute some one
@@ -144,6 +135,85 @@ async def get_ids(ctx):
     """
     for i in ctx.message.guild.members:
         print(i.id,i)
+
+
+##########################
+### Hand rasing things ###
+##########################
+
+@bot.command(aliases=['oi'])
+async def join(ctx):
+    """
+    Join the list of who wants to be called on!
+    """
+
+    player = ctx.author
+    chan = ctx.channel
+
+    ret = gi.addWaiting(player)
+    if ret != 0:
+        await chan.send(gi.lastError)
+        return
+    await chan.send(f"{player} wants to be called on!")
+
+
+@bot.command(aliases=['rm','remove','rme'])
+async def leave(ctx):
+    """
+    Leave the list of who wants to be called on!
+    """
+
+    player = ctx.author
+    chan = ctx.channel
+
+    ret = gi.removeWaiting(player)
+    if ret != 0:
+        await chan.send(gi.lastError)
+        return
+    await chan.send(f"{player} no longer wants to be called on!")
+
+
+@bot.command()
+async def pick(ctx):
+    """
+    Pick a random person who wants to be called on!
+    """
+
+    player = ctx.author
+    chan = ctx.channel
+    await chan.send(f"You are called on **{gi.pickRandom()}**")
+
+
+@bot.command(aliases=['clearlist'])
+async def clear(ctx):
+    """
+    Clear the list of who wants to be called on
+    """
+    
+    player = ctx.author
+    chan = ctx.channel
+    
+    gi.reset()
+    await chan.send(f"Cleared!")
+    
+
+@bot.command(aliases=["showlist"])
+async def list(ctx):
+    """
+    Show who wants to be called on!
+    """
+
+    player = ctx.author
+    chan = ctx.channel
+
+    ret = ""
+
+    if gi.waiting == []:
+        await chan.send("Currently no one is waiting to be called on")
+    else:
+        for p in gi.waiting:
+            ret += str(p) + "\n"
+        await chan.send(ret)
 
 
 @bot.command(aliases=['p'])
