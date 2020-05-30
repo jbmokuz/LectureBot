@@ -7,7 +7,7 @@ import xml.etree.ElementTree as ET
 import copy
 import urllib
 
-TOKEN = os.environ["DISCORD_DEV_TOKEN"]
+TOKEN = os.environ["DISCORD_LECTURE_TOKEN"]
 bot = commands.Bot("!")
 gi = GameInstance()
 
@@ -142,7 +142,8 @@ async def get_ids(ctx):
     """
     Just for testing
     """
-    print(ctx.message.guild.members)    
+    for i in ctx.message.guild.members:
+        print(i.id,i)
 
 
 @bot.command(aliases=['p'])
