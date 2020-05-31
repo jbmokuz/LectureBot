@@ -144,11 +144,6 @@ async def list(ctx):
     chan = ctx.channel
 
     ret = ""
-
-    async for message in chan.history(limit=10):
-        if message.author.id == player.id:
-            await message.delete()
-            break
     
     if gi.waiting == []:
         await chan.send("Currently no one is waiting to be called on")
