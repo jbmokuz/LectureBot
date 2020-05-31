@@ -48,61 +48,6 @@ async def muteAll(b):
 
 @bot.command()
 @has_permissions(administrator=True)
-# Starts a lecute.
-# Basically gives some one (The Lecturer) the abilty to unmute some one and mutes everyone
-async def start_lecture(ctx, lecturer=None):
-    """
-    Starts a lecture (admin only)
-    Args:
-        lecturer: an @ of the lecture ex: !startLecture @moku
-    """
-    global LECTURER
-    player, chan = setup(ctx)
-    try:
-        LECTURER = int(lecturer[3:-1])
-    except:
-        await chan.send("Not a valid lecturer, please @ the lecturer in the argument")
-        return
-    await muteAll(True)
-
-@bot.command()
-@has_permissions(administrator=True)
-# Gets unmutes everyone and gets rid of the Lecturer
-async def end_lecture(ctx):
-    """
-    Ends a lecture (admin only)
-    """
-    global LECTURER
-    player, chan = setup(ctx)
-    if LECTURER == None:
-        await chan.send("Lecture has not been started yet!")
-        return
-    await muteAll(False)
-
-
-@bot.command()
-# This allows a Lecturer to unmute some one
-async def call(ctx, student):
-    """
-    Call on some one to talk (admin and lecturer only)
-    Args:
-        student: an @ of the member ex: !call @moku
-    """    
-    global VOICE_CHAN
-    player, chan = setup(ctx)    
-    if player.guild_permissions.administrator or player.bot or player.id == LECTURER:
-        try:
-            student = int(student[3:-1])
-        except:
-            await chan.send("Not a valid lecturer, please @ the lecturer in the argument")
-            return
-        for member in LECTURE_CHAN.members:
-            if member.id == student and  member.id not in EXCLUDE_LIST:
-                await member.edit(mute=False)
-    else:
-        await chan.send("I'm affraid you can't do that")
-            
-@bot.command()
 async def mute_all(ctx):
     """
     Mutes everyone except admins and the lecturer (admin and lecture only)
@@ -125,16 +70,6 @@ async def unmute_all(ctx):
     global VOICE_CHAN
     player, chan = setup(ctx)
     await muteAll(False)
-
-
-@bot.command()
-# Just to get an id to add someone to the EXCLUDE_LIST
-async def get_ids(ctx):
-    """
-    Just for testing
-    """
-    for i in ctx.message.guild.members:
-        print(i.id,i)
 
 
 ##########################
