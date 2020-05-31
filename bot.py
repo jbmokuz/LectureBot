@@ -149,7 +149,7 @@ async def join(ctx):
 
     player = ctx.author
     chan = ctx.channel
-
+        
     ret = gi.addWaiting(player)
     if ret != 0:
         await chan.send(gi.lastError)
@@ -181,10 +181,12 @@ async def pick(ctx):
 
     player = ctx.author
     chan = ctx.channel
-    await chan.send(f"You are called on **{gi.pickRandom()}**")
+
+    await chan.send(f"You are called on {gi.pickRandom().mention}")
 
 
 @bot.command(aliases=['clearlist'])
+@has_permissions(administrator=True)
 async def clear(ctx):
     """
     Clear the list of who wants to be called on
@@ -192,7 +194,7 @@ async def clear(ctx):
     
     player = ctx.author
     chan = ctx.channel
-    
+
     gi.reset()
     await chan.send(f"Cleared!")
     
@@ -208,6 +210,11 @@ async def list(ctx):
 
     ret = ""
 
+    async for message in chan.history(limit=10):
+        if message.author.id == player.id:
+            await message.delete()
+            break
+    
     if gi.waiting == []:
         await chan.send("Currently no one is waiting to be called on")
     else:
